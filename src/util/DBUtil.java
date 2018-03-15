@@ -1,6 +1,3 @@
-/* ???
- * 1. JDBC URL - oracle.jdbc.driver.OracleDriver
- */
 package util;
 
 import java.sql.Connection;

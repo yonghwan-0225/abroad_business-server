@@ -8,8 +8,9 @@ public class ExchangeBean {
 	private String t_amount;
 	private String t_exchange_rate;
 	private String t_total;
-	
-	public ExchangeBean() {}
+
+	public ExchangeBean() {
+	}
 
 	public ExchangeBean(String t_id, String u_id, String t_time, String t_type, String t_amount, String t_exchange_rate,
 			String t_total) {
@@ -84,6 +85,5 @@ public class ExchangeBean {
 		return "ExchangeBean [t_id=" + t_id + ", u_id=" + u_id + ", t_time=" + t_time + ", t_type=" + t_type
 				+ ", t_amount=" + t_amount + ", t_exchange_rate=" + t_exchange_rate + ", t_total=" + t_total + "]";
 	}
-	
-	
+
 }

@@ -12,12 +12,22 @@ import util.DBUtil;
 
 public class UserDAO {
 	public static ResourceBundle sql = null;
-
+	private static UserDAO instance;
 	static {
 		sql = DBUtil.getResourceBundle();
 	}
 
-	public static ArrayList<UserBean> selectAllUser() throws SQLException {
+	public static UserDAO getInstance() {
+		if (instance == null) {
+			instance = new UserDAO();
+		}
+		return instance;
+	}
+
+	
+	
+	
+	public static ArrayList<UserBean> selectAllUser() throws SQLException { // 전체 회원 검색
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
@@ -36,9 +46,10 @@ public class UserDAO {
 				user.setU_name(rset.getString(3));
 				user.setU_birth(rset.getString(4));
 				user.setU_phone(rset.getString(5));
-				user.setU_address(rset.getString(6));
-				user.setU_bank(rset.getString(7));
-				user.setU_account(rset.getString(8));
+				user.setU_email(rset.getString(6));
+				user.setU_address(rset.getString(7));
+				user.setU_bank(rset.getString(8));
+				user.setU_account(rset.getString(9));
 				all.add(user);
 			}
 			if (all.size() != 0) {
@@ -51,7 +62,7 @@ public class UserDAO {
 		}
 	}
 
-	public static UserBean selectUser(String userId) throws SQLException {
+	public static UserBean selectUser(String userId) throws SQLException { // 선택 유저 검색
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
@@ -61,7 +72,7 @@ public class UserDAO {
 			pstmt = conn.prepareStatement(sql.getString("selectUser"));
 			pstmt.setString(1, userId);
 			rset = pstmt.executeQuery();
-			
+
 			if (rset.next()) {
 				UserBean user = new UserBean();
 				user.setU_id(rset.getString(1));
@@ -69,9 +80,10 @@ public class UserDAO {
 				user.setU_name(rset.getString(3));
 				user.setU_birth(rset.getString(4));
 				user.setU_phone(rset.getString(5));
-				user.setU_address(rset.getString(6));
-				user.setU_bank(rset.getString(7));
-				user.setU_account(rset.getString(8));
+				user.setU_email(rset.getString(6));
+				user.setU_address(rset.getString(7));
+				user.setU_bank(rset.getString(8));
+				user.setU_account(rset.getString(9));
 				return user;
 			}
 			return null;
@@ -80,7 +92,7 @@ public class UserDAO {
 		}
 	}
 
-	public static boolean insertUser(UserBean user) throws SQLException {
+	public static boolean insertUser(UserBean user) throws SQLException { // 신규 회원 가입 , join 컨트롤러에 연동
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -92,12 +104,12 @@ public class UserDAO {
 			pstmt.setString(3, user.getU_name());
 			pstmt.setString(4, user.getU_birth());
 			pstmt.setString(5, user.getU_phone());
-			pstmt.setString(6, user.getU_address());
-			pstmt.setString(7, user.getU_bank());
-			pstmt.setString(8, user.getU_account());
-			
-			
-			if (pstmt.executeUpdate()==1) {
+			pstmt.setString(6, user.getU_email());
+			pstmt.setString(7, user.getU_address());
+			pstmt.setString(8, user.getU_bank());
+			pstmt.setString(9, user.getU_account());
+
+			if (pstmt.executeUpdate() == 1) {
 				return true;
 			}
 			return false;
@@ -105,8 +117,10 @@ public class UserDAO {
 			DBUtil.close(conn, pstmt);
 		}
 	}
-	
-	public static boolean updateUser(String userId, String password, String phone, String address, String bank, String account) throws SQLException {
+
+	// 회원 정보 수정
+	public static boolean updateUser(String userId, String password, String phone, String email, String address,
+			String bank, String account) throws SQLException {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
@@ -116,10 +130,11 @@ public class UserDAO {
 			pstmt.setString(1, userId);
 			pstmt.setString(2, password);
 			pstmt.setString(5, phone);
-			pstmt.setString(6, address);
-			pstmt.setString(7, bank);
-			pstmt.setString(8, account);
-			
+			pstmt.setString(6, email);
+			pstmt.setString(7, address);
+			pstmt.setString(8, bank);
+			pstmt.setString(9, account);
+
 			if (pstmt.executeUpdate() == 1) {
 				return true;
 			}
@@ -128,58 +143,54 @@ public class UserDAO {
 			DBUtil.close(conn, pstmt);
 		}
 	}
-	
 
-	
-	public static int deleteUser(String userId, String password) throws SQLException {
+	// 회원 삭제 기능
+	public static boolean deleteUser(String userId) throws SQLException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+
+		try {
+			conn = DBUtil.getConnection();
+			pstmt = conn.prepareStatement(sql.getString("deleteUser"));
+			pstmt.setString(1, userId);
+
+			if (pstmt.executeUpdate() == 1) {
+				return true;
+			}
+			return false;
+		} finally {
+			DBUtil.close(conn, pstmt);
+		}
+	}
+
+	// 로그인 검증 기능
+	public int loginCheck(String id, String password) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rset = null;
 
-		String dbpw = "";
+		String dbPW = "";
 		int x = -1;
 
 		try {
 			con = DBUtil.getConnection();
 			pstmt = con.prepareStatement(sql.getString("loginCheck"));
-			pstmt.setString(1, userId);
+			pstmt.setString(1, id);
 			rset = pstmt.executeQuery();
 
 			if (rset.next()) {
-				dbpw = rset.getString("password");
-				if (dbpw.equals(password)) {
-					pstmt = con.prepareStatement(sql.getString("deletePerson"));
-					pstmt.setString(1, userId);
-					pstmt.executeUpdate();
-					con.commit();
-					x = 1; // 삭제 성공
+				dbPW = rset.getString("pw");
+				if (dbPW.equals(password)) {
+					x = 1;
 				} else {
-					x = 0; // 비밀번호 다름
+					x = 0;
 				}
+			} else {
+				x = -1;
 			}
-			return x;
-
-		} catch (Exception sqle) {
-			try {
-				con.rollback(); // 오류시 롤백
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			throw new RuntimeException(sqle.getMessage());
 		} finally {
-			try {
-				if (pstmt != null) {
-					pstmt.close();
-					pstmt = null;
-				}
-				if (con != null) {
-					con.close();
-					con = null;
-				}
-			} catch (Exception e) {
-				throw new RuntimeException(e.getMessage());
-			}
+			DBUtil.close(con, pstmt, rset);
 		}
+		return x;
 	}
-		
 }
