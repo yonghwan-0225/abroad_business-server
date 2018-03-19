@@ -4,7 +4,6 @@ public class UserBean {
 	private String u_id;
 	private String u_pw;
 	private String u_name;
-	private String u_birth;
 	private String u_phone;
 	private String u_address;
 	private String u_bank;
@@ -14,13 +13,12 @@ public class UserBean {
 	public UserBean() {
 	}
 
-	public UserBean(String u_id, String u_pw, String u_name, String u_birth, String u_phone, String u_address,
-			String u_bank, String u_account, String u_email) {
+	public UserBean(String u_id, String u_pw, String u_name, String u_phone, String u_email, String u_address,
+			String u_bank, String u_account) {
 		super();
 		this.u_id = u_id;
 		this.u_pw = u_pw;
 		this.u_name = u_name;
-		this.u_birth = u_birth;
 		this.u_phone = u_phone;
 		this.u_address = u_address;
 		this.u_bank = u_bank;
@@ -60,14 +58,6 @@ public class UserBean {
 		this.u_name = u_name;
 	}
 
-	public String getU_birth() {
-		return u_birth;
-	}
-
-	public void setU_birth(String u_birth) {
-		this.u_birth = u_birth;
-	}
-
 	public String getU_phone() {
 		return u_phone;
 	}
@@ -102,8 +92,7 @@ public class UserBean {
 
 	@Override
 	public String toString() {
-		return "UserBean [u_id=" + u_id + ", u_pw=" + u_pw + ", u_name=" + u_name + ", u_birth=" + u_birth
-				+ ", u_phone=" + u_phone + ", u_address=" + u_address + ", u_bank=" + u_bank + ", u_account="
+		return "UserBean [u_id=" + u_id + ", u_pw=" + u_pw + ", u_name=" + u_name +  ", u_phone=" + u_phone + ", u_address=" + u_address + ", u_bank=" + u_bank + ", u_account="
 				+ u_account + ", u_email=" + u_email + "]";
 	}
 
