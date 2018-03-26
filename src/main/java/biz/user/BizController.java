@@ -27,16 +27,16 @@ import model.UserDAO;
  */
 @Controller
 public class BizController {
-	
+
 	UserDAO userdao;
 	ExchangeDAO exchangedao;
-	
+
 	@Autowired
 	public void setDao(UserDAO usrdao, ExchangeDAO exdao) {
 		this.userdao = usrdao;
 		this.exchangedao = exdao;
 	}
-	
+
 	@RequestMapping(value="/api/login" , produces="application/json;charset=utf-8")
 	@ResponseBody
 	public HashMap<String, Object> singin (HttpServletRequest request) throws Exception {
@@ -44,9 +44,9 @@ public class BizController {
 		String id = request.getParameter("id");
 		String pw = request.getParameter("pw");
 		UserBean check = userdao.loginCheck(id, pw);
-		
+
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		
+
 		if(check != null) {
 			HashMap<String, Object> userMap = new HashMap<String, Object>();
 			ArrayList<String> orderData = new ArrayList<String>();
@@ -56,19 +56,19 @@ public class BizController {
 			userMap.put("phone", check.getU_phone());
 			userMap.put("name", check.getU_name());
 			userMap.put("address", check.getU_address());
-			//userMap 
+			//userMap
 			orderData.add("orderData");
 			map.put("orderData", orderData);
 			map.put("status", true);
 			map.put("userData", userMap);
-			
+
 		}else {
 			map.put("status", false);
-			map.put("message", "Login failure");
+			map.put("message", "아이디 또는 비밀번호가 틀렸어요");
 		}
 		return map;
 	}
-	
+
 	@RequestMapping(value="/api/join" , produces="application/json;charset=utf-8")
 	@ResponseBody
 	public HashMap<String, Object> signup(HttpServletRequest request) throws Exception{
@@ -87,15 +87,15 @@ public class BizController {
 						map.put("status", true);
 					}else {
 						map.put("status", false);
-						map.put("message", "Join failure");
-							}
+						map.put("message", "서버 오류로 가입에 실패했어요");
+					}
 			}else {
 				map.put("status", false);
-				map.put("message", "Id 중복");
+				map.put("message", "이미 가입된 아이디예요");
 			}
 		return map;
 	}
-	
+
 	@RequestMapping(value="/api/modify" , produces="application/json;charset=utf-8")
 	@ResponseBody
 	public HashMap<String, Object> modify(HttpServletRequest request) throws Exception {
@@ -111,22 +111,22 @@ public class BizController {
 				map.put("status", true);
 			}else {
 				map.put("status", false);
-				map.put("message", "modification failure");
+				map.put("message", "서버 오류로 수정에 실패했어요");
 			}
 		}else {
 			map.put("status", false);
-			map.put("message", "ID or PW failure");
+			map.put("message", "비밀번호가 틀렸어요");
 		}
 		return map;
 	}
-	
+
 	@RequestMapping(value="/api/exchange" , produces="application/json;charset=utf-8")
 	@ResponseBody
 	public HashMap<String, Object> exchange(HttpServletRequest request) throws Exception {
 		String id = request.getParameter("id");
 		ExchangeBean checkuser = exchangedao.selectUserReq(id);
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		
+
 		if(checkuser != null) {
 			HashMap<String, Object> userMap = new HashMap<String, Object>();
 			userMap.put("id", checkuser.getU_id());
@@ -140,11 +140,11 @@ public class BizController {
 			map.put("reqData", userMap);
 		}else {
 			map.put("status", false);
-			map.put("message", "req failure");
+			map.put("message", "서버 오류로 환전요청에 실패했어요");
 		}
 		return map;
 	}
-	
+
 	/* 발생되는 모든 Exception 처리 가능한 어노테이션 선언하기
 	 * 발생된 예외 메세지를 요청 객체에 저장
 	 * message.jsp로  포워드 방식으로 page이동 하기
@@ -154,9 +154,9 @@ public class BizController {
 	public ModelAndView exceptionTest(Exception e){
 		e.printStackTrace();
 		ModelAndView m = new ModelAndView();// 데이터와 이동되어 처리되는  jsp의 파일명 정보 보유하게 되는 스프링 자체 API
-	
+
 		m.addObject("message",  e.getMessage());//request.setAttriburte("message", e.getMessage()) 동일한 코드
 		m.setViewName("message"); //스프링 설정 파일의 /WEB-INF/views/message.jsp로  forward 로 이동 의미
-		return m;		
+		return m;
 	}
 }
