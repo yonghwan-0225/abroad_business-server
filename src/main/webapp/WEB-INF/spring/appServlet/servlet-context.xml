@@ -18,7 +18,7 @@
 	<!-- jsp의 파일명 앞단, 뒷단 문구 처리하는 설정 -->
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
-		<beans:property name="suffix" value=".jsp" />
+		<beans:property name="suffix" value=".jsp"/>
 		<beans:property name="contentType" value="text/html; charset=UTF-8" />
 	</beans:bean>
 	
