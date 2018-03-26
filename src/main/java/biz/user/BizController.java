@@ -64,7 +64,7 @@ public class BizController {
 
 		}else {
 			map.put("status", false);
-			map.put("message", "아이디 또는 비밀번호가 틀렸어요");
+			map.put("message", "아이디 또는 비밀번호가 틀렸습니다");
 		}
 		return map;
 	}
@@ -87,11 +87,11 @@ public class BizController {
 						map.put("status", true);
 					}else {
 						map.put("status", false);
-						map.put("message", "서버 오류로 가입에 실패했어요");
+						map.put("message", "서버 오류로 가입에 실패했습니다");
 					}
 			}else {
 				map.put("status", false);
-				map.put("message", "이미 가입된 아이디예요");
+				map.put("message", "이미 가입된 아이디입니다");
 			}
 		return map;
 	}
@@ -111,11 +111,11 @@ public class BizController {
 				map.put("status", true);
 			}else {
 				map.put("status", false);
-				map.put("message", "서버 오류로 수정에 실패했어요");
+				map.put("message", "서버 오류로 수정에 실패했습니다");
 			}
 		}else {
 			map.put("status", false);
-			map.put("message", "비밀번호가 틀렸어요");
+			map.put("message", "비밀번호가 틀렸습니다");
 		}
 		return map;
 	}
@@ -140,7 +140,7 @@ public class BizController {
 			map.put("reqData", userMap);
 		}else {
 			map.put("status", false);
-			map.put("message", "서버 오류로 환전요청에 실패했어요");
+			map.put("message", "서버 오류로 환전요청에 실패했습니다");
 		}
 		return map;
 	}
