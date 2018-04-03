@@ -16,14 +16,14 @@ import util.DBUtil;
 @Component
 public class ExchangeDAO {
 	public static ResourceBundle sql = null;
-	private static ExchangeDAO instance;
+	private static TravelDAO instance;
 	static {
 		sql = DBUtil.getResourceBundle();
 	}
 
-	public static ExchangeDAO getInstance() {
+	public static TravelDAO getInstance() {
 		if (instance == null) {
-			instance = new ExchangeDAO();
+			instance = new TravelDAO();
 		}
 		return instance;
 	}
@@ -145,34 +145,8 @@ public class ExchangeDAO {
 		return data;
 	}
 	
-//	public static String selectUserReq(String userId) throws SQLException {
-//		Connection conn = null;
-//		PreparedStatement pstmt = null;
-//		ResultSet rset = null;
-//		String data = null;
-//
-//		try {
-//			conn = DBUtil.getConnection();
-//			pstmt = conn.prepareStatement(sql.getString("selectUserReq"));
-//			pstmt.setString(1, userId);
-//			rset = pstmt.executeQuery();
-//
-//			if (rset.next()) {
-//				data = rset.getString(1);
-//				data = rset.getString(2);
-//				data = rset.getString(3);
-//				data = rset.getString(4);
-//				data = rset.getString(5);
-//				data = rset.getString(6);
-//				data = rset.getString(7);
-//			}
-//		} finally {
-//			DBUtil.close(conn, pstmt, rset);
-//		}
-//		return data;
-//	}
-//	
-	// 선택 유저의 요청 검색
+	
+	
 	
 	public static ArrayList selectUserReq(String userId) throws SQLException {
 		Connection conn = null;
@@ -204,5 +178,35 @@ public class ExchangeDAO {
 		}
 	}
 	
+	
+//	public static String selectUserReq(String userId) throws SQLException {
+//		Connection conn = null;
+//		PreparedStatement pstmt = null;
+//		ResultSet rset = null;
+//		String data = null;
+//
+//		try {
+//			conn = DBUtil.getConnection();
+//			pstmt = conn.prepareStatement(sql.getString("selectUserReq"));
+//			pstmt.setString(1, userId);
+//			rset = pstmt.executeQuery();
+//
+//			if (rset.next()) {
+//				data = rset.getString(1);
+//				data = rset.getString(2);
+//				data = rset.getString(3);
+//				data = rset.getString(4);
+//				data = rset.getString(5);
+//				data = rset.getString(6);
+//				data = rset.getString(7);
+//			}
+//		} finally {
+//			DBUtil.close(conn, pstmt, rset);
+//		}
+//		return data;
+//	}
+//	
+	// 선택 유저의 요청 검색
+
 
 }

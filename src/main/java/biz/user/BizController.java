@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import bean.ExchangeBean;
+import bean.TravelBean;
 import bean.UserBean;
 import model.ExchangeDAO;
+import model.TravelDAO;
 import model.UserDAO;
 
 
@@ -30,11 +32,13 @@ public class BizController {
 
 	UserDAO userdao;
 	ExchangeDAO exchangedao;
+	TravelDAO traveldao;
 
 	@Autowired
-	public void setDao(UserDAO usrdao, ExchangeDAO exdao) {
+	public void setDao(UserDAO usrdao, ExchangeDAO exdao, TravelDAO tradao) {
 		this.userdao = usrdao;
 		this.exchangedao = exdao;
+		this.traveldao = tradao;
 	}
 
 	@RequestMapping(value="/api/login" , produces="application/json;charset=utf-8")
@@ -174,6 +178,33 @@ public class BizController {
 		}
 		return map;
 	}
+	
+	@RequestMapping(value="/api/travel" , produces="application/json;charset=utf-8")
+	@ResponseBody
+	public HashMap<String, Object> travel(HttpServletRequest request) throws Exception {
+		request.setCharacterEncoding("utf-8");
+		String id = request.getParameter("id");
+		UserBean check = null;
+		HashMap<String, Object> map = new HashMap<String, Object>();
+		check = userdao.selectUser(id);
+		if (check != null) {
+			// 이미 회원이 존재할 경우 환전 가능한 insert
+			boolean check2 = traveldao.insertTravel(new TravelBean(request.getParameter("id"), request.getParameter("dateDepart"), 
+																								request.getParameter("dateArrival"),request.getParameter("destination")));
+			
+			if (check2) {
+				map.put("status", true);
+			} 
+			else {
+			map.put("status", false);
+			map.put("message", "요청이 실패하였습니다..");
+			}
+		}
+		return map;
+	}
+	
+	
+	
 
 	/* 발생되는 모든 Exception 처리 가능한 어노테이션 선언하기
 	 * 발생된 예외 메세지를 요청 객체에 저장
