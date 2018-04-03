@@ -44,20 +44,32 @@ public class BizController {
 		String id = request.getParameter("id");
 		String pw = request.getParameter("pw");
 		UserBean check = userdao.loginCheck(id, pw);
-
+		ArrayList<ExchangeBean> userReq = exchangedao.selectUserReq(id);
 		HashMap<String, Object> map = new HashMap<String, Object>();
-
+		
 		if(check != null) {
 			HashMap<String, Object> userMap = new HashMap<String, Object>();
-			ArrayList<String> orderData = new ArrayList<String>();
+			ArrayList<Object> orderData = new ArrayList<Object>();
+			HashMap<String, Object> exMap;
 			userMap.put("id", check.getU_id());
 			userMap.put("pw", check.getU_pw());
 			userMap.put("email", check.getU_email());
 			userMap.put("phone", check.getU_phone());
 			userMap.put("name", check.getU_name());
 			userMap.put("address", check.getU_address());
-			//userMap
-			orderData.add("orderData");
+			//회원정보 반환
+			for(ExchangeBean currReq : userReq) {
+			exMap = new HashMap<String, Object>();
+			exMap.put("orderNo", currReq.getT_id());
+			exMap.put("orderType", currReq.getT_type());
+			exMap.put("status", currReq.getT_status());
+			exMap.put("amount", currReq.getT_amount());
+			exMap.put("serviceRate", currReq.getT_exchange_rate());
+			exMap.put("total", currReq.getT_total());
+			exMap.put("time", currReq.getT_time());
+			orderData.add(exMap);
+			}
+			//환전 맵 반환
 			map.put("orderData", orderData);
 			map.put("status", true);
 			map.put("userData", userMap);
@@ -69,34 +81,32 @@ public class BizController {
 		return map;
 	}
 
-	@RequestMapping(value="/api/join" , produces="application/json;charset=utf-8")
-	@ResponseBody
-	public HashMap<String, Object> signup(HttpServletRequest request) throws Exception{
-		request.setCharacterEncoding("utf-8");
-		//오라클에 null값이 들어가지 않게끔 프로그래밍 진행
-		//질문ㄱ ㄱ
-		String id = request.getParameter("id");
-		UserBean check;
-		HashMap<String, Object> map = new HashMap<String, Object>();
-			check = userdao.selectUser(id);
-			if(check==null) {
-				boolean check2 = userdao.joinUser(new UserBean(request.getParameter("id"), request.getParameter("pw"),
-						request.getParameter("name"), request.getParameter("phone"),
-						request.getParameter("email"), request.getParameter("address")));
-					if(check2) {
-						map.put("status", true);
-					}else {
-						map.put("status", false);
-						map.put("message", "서버 오류로 가입에 실패했습니다");
-					}
-			}else {
-				map.put("status", false);
-				map.put("message", "이미 가입된 아이디입니다");
-			}
-		return map;
-	}
+		@RequestMapping(value="/api/join" , produces="application/json;charset=utf-8")
+		@ResponseBody
+		public HashMap<String, Object> signup(HttpServletRequest request) throws Exception{
+			request.setCharacterEncoding("utf-8");
+			String id = request.getParameter("id");
+			UserBean check;
+			HashMap<String, Object> map = new HashMap<String, Object>();
+				check = userdao.selectUser(id);
+				if(check==null) {
+					boolean check2 = userdao.joinUser(new UserBean(request.getParameter("id"), request.getParameter("pw"),
+							request.getParameter("name"), request.getParameter("phone"),
+							request.getParameter("email"), request.getParameter("address")));
+						if(check2) {
+							map.put("status", true);
+						}else {
+							map.put("status", false);
+							map.put("message", "서버 오류로 가입에 실패했습니다");
+						}
+				}else {
+					map.put("status", false);
+					map.put("message", "이미 가입된 아이디입니다");
+				}
+			return map;
+		}
 
-	@RequestMapping(value="/api/modify" , produces="application/json;charset=utf-8")
+	@RequestMapping(value="/api/edit" , produces="application/json;charset=utf-8")
 	@ResponseBody
 	public HashMap<String, Object> modify(HttpServletRequest request) throws Exception {
 		String id = request.getParameter("id");
@@ -104,43 +114,63 @@ public class BizController {
 		UserBean check = userdao.loginCheck(id, pw);
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		if(check!=null) {
-			boolean check2 = userdao.updateUser(request.getParameter("id"), request.getParameter("pw"),
-				request.getParameter("name"), request.getParameter("phone"),
-				request.getParameter("email"), request.getParameter("address"));
-			if(check2) {
-				map.put("status", true);
+			boolean check2;
+			if(request.getParameter("newPw")!=null) {
+				check2 = userdao.updateUser(request.getParameter("id"), request.getParameter("newPw"),
+						request.getParameter("name"), request.getParameter("phone"),
+						request.getParameter("email"), request.getParameter("address"));
 			}else {
-				map.put("status", false);
-				map.put("message", "서버 오류로 수정에 실패했습니다");
+				check2 = userdao.updateUser(request.getParameter("id"), request.getParameter("Pw"),
+						request.getParameter("name"), request.getParameter("phone"),
+						request.getParameter("email"), request.getParameter("address"));
 			}
-		}else {
-			map.put("status", false);
-			map.put("message", "비밀번호가 틀렸습니다");
+				if(check2) {
+					map.put("status", true);
+				}else {
+					map.put("status", false);
+					map.put("message", "서버 오류로 수정에 실패했습니다");
+				}
+				}else {
+				map.put("status", false);
+				map.put("message", "비밀번호가 틀렸습니다");
 		}
+			
 		return map;
 	}
 
 	@RequestMapping(value="/api/exchange" , produces="application/json;charset=utf-8")
 	@ResponseBody
 	public HashMap<String, Object> exchange(HttpServletRequest request) throws Exception {
+		request.setCharacterEncoding("utf-8");
 		String id = request.getParameter("id");
-		ExchangeBean checkuser = exchangedao.selectUserReq(id);
+		UserBean check = null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
-
-		if(checkuser != null) {
-			HashMap<String, Object> userMap = new HashMap<String, Object>();
-			userMap.put("id", checkuser.getU_id());
-			userMap.put("reqID", checkuser.getT_id());
-			userMap.put("time", checkuser.getT_time());
-			userMap.put("type", checkuser.getT_type());
-			userMap.put("amount", checkuser.getT_amount());
-			userMap.put("exchange_rate", checkuser.getT_exchange_rate());
-			userMap.put("total", checkuser.getT_total());
-			map.put("status", true);
-			map.put("reqData", userMap);
-		}else {
+		HashMap<String, Object> map2 = new HashMap<String, Object>();
+		check = userdao.selectUser(id);
+		if (check != null) {
+			// 이미 회원이 존재할 경우 환전 가능한 insert
+			boolean check2 = exchangedao.insertReq(new ExchangeBean(request.getParameter("id"), request.getParameter("time"), 
+																								request.getParameter("orderType"), "결제 완료", request.getParameter("amount"),
+																								request.getParameter("serviceRate"), request.getParameter("total")));
+			
+			if (check2) {
+				map2.put("orderNo", exchangedao.selectT_id(request.getParameter("id"), request.getParameter("time")));
+				map2.put("orderType", request.getParameter("orderType"));
+				map2.put("status", "결제완료");
+				map2.put("amount", request.getParameter("amount"));
+				map2.put("serviceRate", request.getParameter("serviceRate"));
+				map2.put("total", request.getParameter("total"));
+				map2.put("time", request.getParameter("time"));
+				
+				map.put("newOrderData", map2);
+				map.put("status", true);
+			} else {
+				map.put("status", false);
+				map.put("message", "환전요청불가");
+			}
+		} else {
 			map.put("status", false);
-			map.put("message", "서버 오류로 환전요청에 실패했습니다");
+			map.put("message", "아이디가 없습니다.");
 		}
 		return map;
 	}

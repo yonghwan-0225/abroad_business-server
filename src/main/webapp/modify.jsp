@@ -9,6 +9,6 @@
 	<title>Insert title here</title>
 </head>
 <body>
-<jsp:forward page="./api/modify"></jsp:forward>
+<jsp:forward page="./api/edit"></jsp:forward>
 </body>
 </html>

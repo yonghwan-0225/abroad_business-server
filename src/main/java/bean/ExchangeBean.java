@@ -5,6 +5,7 @@ public class ExchangeBean {
 	private String u_id;
 	private String t_time;
 	private String t_type;
+	private String t_status;
 	private String t_amount;
 	private String t_exchange_rate;
 	private String t_total;
@@ -12,16 +13,37 @@ public class ExchangeBean {
 	public ExchangeBean() {
 	}
 
-	public ExchangeBean(String t_id, String u_id, String t_time, String t_type, String t_amount, String t_exchange_rate,
+	public ExchangeBean(String t_id, String u_id, String t_time, String t_type, String t_status, String t_amount, String t_exchange_rate,
 			String t_total) {
 		super();
 		this.t_id = t_id;
 		this.u_id = u_id;
 		this.t_time = t_time;
 		this.t_type = t_type;
+		this.t_status = t_status;
 		this.t_amount = t_amount;
 		this.t_exchange_rate = t_exchange_rate;
 		this.t_total = t_total;
+	}
+
+	public ExchangeBean(String u_id, String t_time, String t_type, String t_status, String t_amount, String t_exchange_rate,
+			String t_total) {
+		super();
+		this.u_id = u_id;
+		this.t_time = t_time;
+		this.t_type = t_type;
+		this.t_status = t_status;
+		this.t_amount = t_amount;
+		this.t_exchange_rate = t_exchange_rate;
+		this.t_total = t_total;
+	}
+
+	public String getT_status() {
+		return t_status;
+	}
+
+	public void setT_status(String t_status) {
+		this.t_status = t_status;
 	}
 
 	public String getT_id() {
